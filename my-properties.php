@@ -14,7 +14,10 @@
 defined( 'ABSPATH' ) || exit;
 
 define('PROPERTY_LISTING_VERSION', '1.0.0');
+define('PROPERTY_LISTING_ABS_PATH',plugin_dir_path(__FILE__));
+define('PROPERTY_LISTING_ABS_URL',plugin_dir_url(__FILE__));
 
+require_once plugin_dir_path( __FILE__ ) . 'functions.php';
 
 function activate_property_listing() {
 	require_once plugin_dir_path( __FILE__ ) . 'inc/class-property-listing-activator.php';

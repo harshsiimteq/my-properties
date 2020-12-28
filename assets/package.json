@@ -1,0 +1,16 @@
+{
+  "name": "property-listings",
+  "version": "1.0.0",
+  "description": "Simple elegent minimal property listings that made with love",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harsh Shah",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.1.0",
+    "postcss": "^8.2.1",
+    "tailwindcss": "^2.0.2"
+  }
+}
