@@ -131,9 +131,9 @@ class PropertyListing
 		$wpdb->insert($table_name, array(
 		    'property_name' => $property_name,
 		    'property_url' => $property_url,
-		    'property_description' => $property_description, // ... and so on
-		    'property_type' => $property_type, // ... and so on
-		    'property_status' => $property_status, // ... and so on
+		    'property_description' => $property_description,
+		    'property_type' => $property_type,
+		    'property_status' => $property_status,
 		    'property_added_by' => get_current_user_id(),
 		    'property_image' => $image_url,
 		    'created_at' => date('Y-m-d H:i:s')
@@ -163,9 +163,9 @@ class PropertyListing
 			$wpdb->update($table_name, array(
 			    'property_name' => $property_name,
 			    'property_url' => $property_url,
-			    'property_description' => $property_description, // ... and so on
-			    'property_type' => $property_type, // ... and so on
-			    'property_status' => $property_status, // ... and so on
+			    'property_description' => $property_description,
+			    'property_type' => $property_type,
+			    'property_status' => $property_status,
 			    'property_added_by' => get_current_user_id(),
 			    'property_image' => $image_url,
 			    'updated_at' => date('Y-m-d H:i:s')
@@ -174,9 +174,9 @@ class PropertyListing
 			$wpdb->update($table_name, array(
 			    'property_name' => $property_name,
 			    'property_url' => $property_url,
-			    'property_description' => $property_description, // ... and so on
-			    'property_type' => $property_type, // ... and so on
-			    'property_status' => $property_status, // ... and so on
+			    'property_description' => $property_description,
+			    'property_type' => $property_type,
+			    'property_status' => $property_status,
 			    'property_added_by' => get_current_user_id(),
 			    'updated_at' => date('Y-m-d H:i:s')
 			), ['property_id' => $id]);
