@@ -1,9 +1,7 @@
 <?php
 
-class PropertyListingDeactivator
-{
-	public static function deactivate()
-	{
+class PropertyListingDeactivator {
+	public static function deactivate() {
 		//
 	}
 }
