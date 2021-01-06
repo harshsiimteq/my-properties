@@ -8,6 +8,8 @@ class PropertyListing {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 		add_action( 'admin_menu', [ $this, 'setup_menu' ] );
 		add_action( 'init', [ $this, 'dequeue_styles' ], 100 );
+		add_action( 'wp_dashboard_setup', [ $this, 'properties_panel' ] );
+		add_action( 'init', [ $this, 'property_short_code' ] );
 	}
 
 	public function enqueue_assets( $hook ) {
@@ -17,9 +19,9 @@ class PropertyListing {
 		];
 
 		if ( in_array( $hook, $lookup_hooks ) ) {
-			wp_enqueue_style( 'property-listing', plugin_dir_url( __DIR__ ) . 'assets/css/main-pl.css', [], true, 'all' );
-			wp_enqueue_style( 'property-listing-custom', plugin_dir_url( __DIR__ ) . 'assets/css/custom-pl.css', [], true, 'all' );
-			wp_enqueue_script( 'property-listing', plugin_dir_url( __DIR__ ) . 'assets/js/main-pl.js', [ 'jquery' ], '1.0.0', true );
+			wp_enqueue_style( 'property-listing', plugin_dir_url( __DIR__ ) . 'assets/css/main-pl.css', [], TRUE, 'all' );
+			wp_enqueue_style( 'property-listing-custom', plugin_dir_url( __DIR__ ) . 'assets/css/custom-pl.css', [], TRUE, 'all' );
+			wp_enqueue_script( 'property-listing', plugin_dir_url( __DIR__ ) . 'assets/js/main-pl.js', [ 'jquery' ], '1.0.0', TRUE );
 		}
 
 	}
@@ -112,10 +114,10 @@ class PropertyListing {
 		$property_description = isset( $_POST['property_description'] ) ? sanitize_text_field( $_POST['property_description'] ) : '';
 		$property_type        = isset( $_POST['property_type'] ) ? sanitize_text_field( $_POST['property_type'] ) : '';
 		$property_status      = isset( $_POST['property_status'] ) ? sanitize_text_field( $_POST['property_status'] ) : '';
-		$image                = isset( $_FILES['property_image'] ) ? $_FILES['property_image'] : null;
+		$image                = isset( $_FILES['property_image'] ) ? $_FILES['property_image'] : NULL;
 		$image_url            = '';
 		if ( ! is_null( $image ) ) {
-			$upload_overrides = [ 'test_form' => false ];
+			$upload_overrides = [ 'test_form' => FALSE ];
 			$movefile         = wp_handle_upload( $image, $upload_overrides );
 			if ( $movefile && ! isset( $movefile['error'] ) && isset( $movefile['url'] ) ) {
 				$image_url = $movefile['url'];
@@ -143,10 +145,10 @@ class PropertyListing {
 		$property_description = isset( $_POST['property_description'] ) ? sanitize_text_field( $_POST['property_description'] ) : '';
 		$property_type        = isset( $_POST['property_type'] ) ? sanitize_text_field( $_POST['property_type'] ) : '';
 		$property_status      = isset( $_POST['property_status'] ) ? sanitize_text_field( $_POST['property_status'] ) : '';
-		$image                = isset( $_FILES['property_image'] ) ? $_FILES['property_image'] : null;
+		$image                = isset( $_FILES['property_image'] ) ? $_FILES['property_image'] : NULL;
 		$image_url            = '';
 		if ( ! is_null( $image ) ) {
-			$upload_overrides = [ 'test_form' => false ];
+			$upload_overrides = [ 'test_form' => FALSE ];
 			$movefile         = wp_handle_upload( $image, $upload_overrides );
 			if ( $movefile && ! isset( $movefile['error'] ) && isset( $movefile['url'] ) ) {
 				$image_url = $movefile['url'];
@@ -174,5 +176,55 @@ class PropertyListing {
 				'updated_at'           => date( 'Y-m-d H:i:s' ),
 			], [ 'property_id' => $id ] );
 		}
+	}
+
+	public function properties_panel() {
+		wp_add_dashboard_widget( 'properties_stats', 'My Properties', [ $this, 'properties_panel_data' ] );
+	}
+
+	public function properties_panel_data() {
+		global $wpdb, $table_prefix;
+		$table           = $table_prefix . 'property_listing';
+		$property_counts = $wpdb->get_var( "SELECT COUNT(*) FROM $table" );
+		echo "You have listed total <strong>$property_counts properties</strong>.";
+	}
+
+	public function property_short_code() {
+		add_shortcode( 'properties', [ $this, 'render_short_code_data' ] );
+	}
+
+	public function render_short_code_data( $atts, $content = NULL ) {
+		global $wpdb, $table_prefix;
+
+		$table = $table_prefix . 'property_listing';
+
+		$attributes = shortcode_atts([
+			'count' => 10,
+			'latest' => true
+		], $atts);
+
+		$count = $attributes['count'];
+		$latest = $attributes['latest'];
+		if ($latest) {
+			$properties = $wpdb->get_results("SELECT * FROM $table ORDER BY property_id DESC LIMIT $count", ARRAY_A);
+		} else {
+			$properties = $wpdb->get_results("SELECT * FROM $table ORDER BY property_id ASC LIMIT $count", ARRAY_A);
+		}
+		$properties = $this->transformProperty($properties);
+		print_r($properties);
+	}
+
+	public static function transformProperty( $properties ) {
+		$data = [];
+
+		foreach ($properties as $key => $property) {
+			$data[$key]['property_name'] = $property['property_name'];
+			$data[$key]['property_url'] = $property['property_url'];
+			$data[$key]['property_type'] = $property['property_type'];
+			$data[$key]['property_status'] = $property['property_status'];
+			$data[$key]['property_image'] = $property['property_image'];
+		}
+
+		return $data;
 	}
 }

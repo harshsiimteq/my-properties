@@ -33,6 +33,14 @@ register_activation_hook( __FILE__, 'activate_property_listing' );
 
 register_deactivation_hook( __FILE__, 'deactivate_property_listing' );
 
+function register_api() {
+	require_once plugin_dir_path( __FILE__ ) . 'inc/class-property-listing-api.php';
+	$api = new PropertyAPI();
+	$api->run();
+}
+
+register_api();
+
 function run_property_listing() {
 	require_once plugin_dir_path( __FILE__ ) . 'inc/class-property-listing.php';
 	$plugin = new PropertyListing();
